@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.sem2labandroid6"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.sem2labandroid6"
