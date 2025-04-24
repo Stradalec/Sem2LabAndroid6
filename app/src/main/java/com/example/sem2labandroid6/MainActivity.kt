@@ -16,12 +16,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: ImagesViewModel
     private val permissionRequestCode = 100
     private lateinit var recyclerView: RecyclerView
+    private var hasPermission = false
     private val requiredPermission
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_IMAGES
@@ -36,60 +39,38 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.rView)
         recyclerView.layoutManager = GridLayoutManager(this, 3)
 
+        viewModel = ViewModelProvider(this)[ImagesViewModel::class.java]
+
+        viewModel.images.observe(this) { images ->
+            recyclerView.adapter = ImagesAdapter(images)
+        }
+
         checkPermissions()
+        if (hasPermission) {
+            viewModel.loadImages(this)
+        }
     }
 
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, requiredPermission) == PackageManager.PERMISSION_GRANTED) {
-            loadImages()
+            hasPermission = true
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(requiredPermission), permissionRequestCode)
+            hasPermission = true
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == permissionRequestCode && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            loadImages()
+            viewModel.loadImages(this)
         } else {
             Toast.makeText(this, "Разрешение нужно для работы", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
-    private fun loadImages() {
-        val images = getImages()
-        recyclerView.adapter = ImagesAdapter(images)
-        Log.d("MainActivity", "Загружено ${images.size} картинок")
-    }
 
-    private fun getImages(): List<Uri> {
-        val imageUris = mutableListOf<Uri>()
 
-        val projection = arrayOf(MediaStore.Images.Media._ID)
-        val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
-
-        val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-        } else {
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        }
-
-        contentResolver.query(
-            collection,
-            projection,
-            null,
-            null,
-            sortOrder
-        )?.use { cursor ->
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                imageUris.add(ContentUris.withAppendedId(collection, id))
-            }
-        }
-
-        return imageUris
-    }
 }
 
