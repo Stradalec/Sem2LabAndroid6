@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: ImagesViewModel
+    private val viewModel: ImagesViewModel by lazy {
+        ViewModelProvider(this)[ImagesViewModel::class.java]
+    }
     private val permissionRequestCode = 100
     private lateinit var recyclerView: RecyclerView
     private var hasPermission = false
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.rView)
         recyclerView.layoutManager = GridLayoutManager(this, 3)
 
-        viewModel = ViewModelProvider(this)[ImagesViewModel::class.java]
+
 
         viewModel.images.observe(this) { images ->
             recyclerView.adapter = ImagesAdapter(images)
@@ -44,19 +46,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(
+        hasPermission = ContextCompat.checkSelfPermission(
                 this,
                 requiredPermission
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            hasPermission = true
-        } else {
+        if (!hasPermission) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(requiredPermission),
                 permissionRequestCode
             )
-            hasPermission = true
         }
     }
 
@@ -66,12 +65,17 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == permissionRequestCode && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            viewModel.loadImages(this)
-        } else {
-            Toast.makeText(this, "Разрешение нужно для работы", Toast.LENGTH_SHORT).show()
-            finish()
+        if (requestCode == permissionRequestCode) {
+            hasPermission = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (hasPermission) {
+                viewModel.loadImages(this)
+            } else {
+                Toast.makeText(this, "Разрешение нужно для работы", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
+
     }
+
 }
 

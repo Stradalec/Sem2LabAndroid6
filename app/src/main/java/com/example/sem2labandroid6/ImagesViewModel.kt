@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,7 +51,7 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
                 imageUris.add(ContentUris.withAppendedId(collection, id))
             }
         }
-
+        Log.d("TOTAL_IMAGES", "Found: ${imageUris.size}")
         return imageUris
     }
 }

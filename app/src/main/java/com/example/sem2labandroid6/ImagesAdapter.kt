@@ -1,6 +1,7 @@
 package com.example.sem2labandroid6
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ class ImagesAdapter(private val images: List<Uri>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d("BIND_DEBUG", "Binding position $position: ${images[position]}")
         Glide.with(holder.itemView)
             .load(images[position])
             .into(holder.imageView)
