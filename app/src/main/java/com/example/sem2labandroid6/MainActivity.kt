@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
+import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -23,8 +24,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupRecyclerView()
-        observeViewModel()
         checkPermissions()
+        observeViewModel()
+
+
     }
 
     private fun setupRecyclerView() {
@@ -33,11 +36,17 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = ImagesAdapter { position ->
             showDescriptionEditor(position)
         }
+        recyclerView.setHasFixedSize(true)
     }
 
     private fun observeViewModel() {
         viewModel.images.observe(this) { items ->
-            (recyclerView.adapter as? ImagesAdapter)?.updateItems(items)
+            (recyclerView.adapter as? ImagesAdapter)?.apply {
+                updateItems(items)
+                recyclerView.post {
+                    recyclerView.requestLayout()
+                }
+            }
         }
     }
 

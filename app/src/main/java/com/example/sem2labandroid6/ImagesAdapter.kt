@@ -1,5 +1,6 @@
 package com.example.sem2labandroid6
 
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
@@ -25,12 +28,12 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+        Log.d("BIND_DEBUG", "Binding URI: ${item.uri}")
         Glide.with(holder.itemView)
             .load(item.uri)
             .into(holder.imageView)
 
         holder.descriptionView.text = item.description
-
         holder.itemView.setOnLongClickListener {
             onLongClick(position)
             true
@@ -39,8 +42,10 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit) :
 
     override fun getItemCount() = items.size
     fun updateItems(newItems: List<ImageItem>) {
+        Log.d("ADAPTER", "Получено ${newItems.size} элементов")
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
+        Log.d("ADAPTER_DEBUG", "Items updated: ${newItems.size}")
     }
 }
