@@ -1,15 +1,11 @@
 package com.example.sem2labandroid6
 
-import android.graphics.Color
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
@@ -17,6 +13,7 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit) :
     RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<ImageItem>()
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
         val descriptionView: TextView = view.findViewById(R.id.tvDescription)

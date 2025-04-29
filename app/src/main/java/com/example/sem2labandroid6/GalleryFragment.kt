@@ -1,25 +1,18 @@
 package com.example.sem2labandroid6
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.sem2labandroid6.databinding.FragmentGalleryBinding
 
 class GalleryFragment : Fragment() {
@@ -27,17 +20,6 @@ class GalleryFragment : Fragment() {
     private lateinit var binding: FragmentGalleryBinding
     private val permissionRequestCode = 100
 
-    private val editDescriptionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data = result.data
-            val position = data?.getIntExtra(EditDescriptionActivity.EXTRA_POSITION, -1) ?: -1
-            val newDescription = data?.getStringExtra(EditDescriptionActivity.EXTRA_DESCRIPTION) ?: ""
-
-            if (position != -1) {
-                viewModel.updateDescription(position, newDescription)
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,11 +60,16 @@ class GalleryFragment : Fragment() {
         val permission = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
                 Manifest.permission.READ_MEDIA_IMAGES
+
             else ->
                 Manifest.permission.READ_EXTERNAL_STORAGE
         }
 
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             viewModel.loadImages()
         } else {
             requestPermissions(arrayOf(permission), permissionRequestCode)
@@ -126,7 +113,7 @@ class GalleryFragment : Fragment() {
             val newDescription = result.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
 
             if (position != -1) {
-                viewModel.updateDescription(position, newDescription)
+                viewModel.updateDescription(position.toLong(), newDescription)
             }
         }
     }

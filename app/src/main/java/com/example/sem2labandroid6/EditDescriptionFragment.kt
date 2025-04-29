@@ -46,7 +46,8 @@ class EditDescriptionFragment : Fragment() {
 
 
         binding.etDescription.postDelayed({
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(binding.etDescription, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
 
@@ -77,7 +78,8 @@ class EditDescriptionFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etDescription.windowToken, 0)
         binding.etDescription.clearFocus()
     }

@@ -2,8 +2,6 @@ package com.example.sem2labandroid6
 
 import android.app.Application
 import android.content.ContentUris
-import android.content.Context
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -30,7 +28,11 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun queryImages(): List<ImageItem> {
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.DATA)
+        val projection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.MIME_TYPE,
+            MediaStore.Images.Media.DATA
+        )
 
         return getApplication<Application>().contentResolver.query(
             collection,
@@ -49,23 +51,25 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
                     val path = cursor.getString(dataColumn)
                     val uri = ContentUris.withAppendedId(collection, id)
 
-                    add(ImageItem(
-                        mediaId = id,
-                        uri = uri,
-                        description = ""
-                    ))
+                    add(
+                        ImageItem(
+                            mediaId = id,
+                            uri = uri,
+                            description = ""
+                        )
+                    )
                 }
             }
         } ?: emptyList()
     }
-    fun updateDescription(position: Int, newDescription: String) {
+
+    fun updateDescription(mediaId: Long, newDescription: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val item = _images.value?.get(position) ?: return@launch
-            dao.upsert(ImageDescription(item.mediaId, newDescription))
-            val newList = _images.value?.toMutableList()?.apply {
-                this[position] = item.copy(description = newDescription)
+            dao.upsert(ImageDescription(mediaId, newDescription))
+            val newList = _images.value?.map {
+                if (it.mediaId == mediaId) it.copy(description = newDescription) else it
             }
-            _images.postValue(newList!!)
+            _images.postValue(newList)
         }
     }
 
