@@ -7,17 +7,11 @@ import androidx.room.Upsert
 @Dao
 interface ImageDescriptionDao {
     @Upsert
-    suspend fun upsert(description: ImageDescription) {
-        Log.d("ROOM", "Сохранение: mediaId=${description.mediaId}, описание='${description.description}'")
-    }
+    suspend fun upsert(description: ImageDescription)
 
     @Query("SELECT description FROM image_descriptions WHERE mediaId = :mediaId")
-    suspend fun getDescription(mediaId: Long): String? {
-        return getDescriptionInternal(mediaId).also {
-            Log.d("ROOM", "Загрузка: mediaId=$mediaId, описание='$it'")
-        }
-    }
+    suspend fun getDescription(mediaId: Long): String?
 
     @Query("SELECT description FROM image_descriptions WHERE mediaId = :mediaId")
-     abstract suspend fun getDescriptionInternal(mediaId: Long): String?
+    suspend fun getDescriptionInternal(mediaId: Long): String?
 }

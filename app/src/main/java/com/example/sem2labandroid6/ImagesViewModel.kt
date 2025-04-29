@@ -67,7 +67,6 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
             }
             _images.postValue(newList!!)
         }
-        loadImages()
     }
 
 }

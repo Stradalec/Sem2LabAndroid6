@@ -49,14 +49,13 @@ class EditDescriptionActivity : AppCompatActivity() {
         etDescription.clearFocus()
 
 
-        Handler(Looper.getMainLooper()).postDelayed({
             val resultIntent = Intent().apply {
                 putExtra(EXTRA_POSITION, intent.getIntExtra(EXTRA_POSITION, -1))
                 putExtra(EXTRA_DESCRIPTION, etDescription.text.toString())
             }
             setResult(RESULT_UPDATE, resultIntent)
             finish()
-        }, 150)
+
     }
     private fun handleCancelAction(etDescription: EditText) {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
