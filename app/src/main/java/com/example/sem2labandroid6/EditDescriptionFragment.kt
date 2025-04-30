@@ -36,7 +36,7 @@ class EditDescriptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        position = args.position
+        position = args.mediaId
         initialDescription = args.description
 
         setupUI()
@@ -66,7 +66,7 @@ class EditDescriptionFragment : Fragment() {
         hideKeyboard()
 
         val result = bundleOf(
-            POSITION_KEY to position,
+            "mediaId" to args.mediaId,
             DESCRIPTION_KEY to binding.etDescription.text.toString()
         )
 

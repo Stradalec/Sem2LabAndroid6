@@ -25,7 +25,7 @@
         android:name="com.example.sem2labandroid6.EditDescriptionFragment"
         android:label="Редактировать описание">
         <argument
-            android:name="position"
+            android:name="mediaId"
             app:argType="long" />
         <argument
             android:name="description"

@@ -20,6 +20,8 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
     fun loadImages() {
         viewModelScope.launch(Dispatchers.IO) {
             val items = queryImages().map { item ->
+                val test = dao.getDescription(item.mediaId)
+                Log.d("DB_DEBUG", "MediaId: ${item.mediaId}, Desc: $test")
                 item.copy(description = dao.getDescription(item.mediaId) ?: "")
             }
             _images.postValue(items)
@@ -69,7 +71,7 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
             val newList = _images.value?.map {
                 if (it.mediaId == mediaId) it.copy(description = newDescription) else it
             }
-            _images.postValue(newList!!)
+            _images.postValue(newList ?: emptyList())
         }
     }
 

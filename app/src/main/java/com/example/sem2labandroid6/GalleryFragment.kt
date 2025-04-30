@@ -96,7 +96,7 @@ class GalleryFragment : Fragment() {
         val currentItem = viewModel.images.value?.get(position) ?: return
 
         val direction = GalleryFragmentDirections.actionToEdit(
-            position = position.toLong(),
+            mediaId = currentItem.mediaId,
             description = currentItem.description
         )
         findNavController().navigate(direction)
@@ -117,11 +117,11 @@ class GalleryFragment : Fragment() {
             EditDescriptionFragment.REQUEST_KEY,
             viewLifecycleOwner
         ) { _, result ->
-            val position = result.getLong(EditDescriptionFragment.POSITION_KEY, -1)
+            val mediaId = result.getLong("mediaId")
             val newDescription = result.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
-            val one: Long = 1
-            if (position != one) {
-                viewModel.updateDescription(position, newDescription)
+            val oneWitnMinus: Long = -1
+            if (mediaId != oneWitnMinus) {
+                viewModel.updateDescription(mediaId, newDescription)
             }
         }
     }
