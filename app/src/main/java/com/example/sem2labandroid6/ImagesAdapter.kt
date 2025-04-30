@@ -1,6 +1,5 @@
 package com.example.sem2labandroid6
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,22 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class ImagesAdapter(private val onLongClick: (Int) -> Unit, private val onClick: (ImageItem) -> Unit) :
+class ImagesAdapter(
+    private val onLongClick: (Int) -> Unit,
+    private val onClick: (ImageItem) -> Unit
+) :
     RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<ImageItem>()
+
+    private var items: List<ImageItem> = emptyList()
+        set(value) {
+            field = value.toList()
+            notifyDataSetChanged()
+        }
+
+    fun updateItems(newItems: List<ImageItem>) {
+        items = newItems.toList()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
@@ -25,7 +36,6 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit, private val onClick:
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        Log.d("BIND_DEBUG", "Binding URI: ${item.uri}")
         Glide.with(holder.itemView)
             .load(item.uri)
             .into(holder.imageView)
@@ -41,11 +51,4 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit, private val onClick:
     }
 
     override fun getItemCount() = items.size
-    fun updateItems(newItems: List<ImageItem>) {
-        Log.d("ADAPTER", "Получено ${newItems.size} элементов")
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
-        Log.d("ADAPTER_DEBUG", "Items updated: ${newItems.size}")
-    }
 }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,8 +120,8 @@ class GalleryFragment : Fragment() {
         ) { _, result ->
             val mediaId = result.getLong("mediaId")
             val newDescription = result.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
-            val oneWitnMinus: Long = -1
-            if (mediaId != oneWitnMinus) {
+            val oneWithMinus: Long = -1
+            if (mediaId != oneWithMinus) {
                 viewModel.updateDescription(mediaId, newDescription)
             }
         }

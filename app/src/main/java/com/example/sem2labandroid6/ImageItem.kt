@@ -5,5 +5,5 @@ import android.net.Uri
 data class ImageItem(
     val mediaId: Long,
     val uri: Uri,
-    var description: String = ""
+    val description: String = ""
 )

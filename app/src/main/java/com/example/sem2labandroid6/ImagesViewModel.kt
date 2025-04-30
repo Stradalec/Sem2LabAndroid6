@@ -3,13 +3,13 @@ package com.example.sem2labandroid6
 import android.app.Application
 import android.content.ContentUris
 import android.provider.MediaStore
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImagesViewModel(application: Application) : AndroidViewModel(application) {
     private val database = AppDatabase.getInstance(application)
@@ -19,12 +19,12 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
 
     fun loadImages() {
         viewModelScope.launch(Dispatchers.IO) {
-            val items = queryImages().map { item ->
-                val test = dao.getDescription(item.mediaId)
-                Log.d("DB_DEBUG", "MediaId: ${item.mediaId}, Desc: $test")
-                item.copy(description = dao.getDescription(item.mediaId) ?: "")
-            }
-            _images.postValue(items)
+            val dbData = dao.getAllDescriptions().associateBy { it.mediaId }
+            val newItems = queryImages().map { item ->
+                item.copy(description = dbData[item.mediaId]?.description ?: "")
+            }.toList()
+
+            _images.postValue(newItems)
         }
     }
 
@@ -44,13 +44,10 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
             "${MediaStore.Images.Media.DATE_ADDED} DESC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
 
             mutableListOf<ImageItem>().apply {
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumn)
-                    Log.d("MEDIA", "Найден mediaId: $id")
-                    val path = cursor.getString(dataColumn)
                     val uri = ContentUris.withAppendedId(collection, id)
 
                     add(
@@ -68,10 +65,17 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
     fun updateDescription(mediaId: Long, newDescription: String) {
         viewModelScope.launch(Dispatchers.IO) {
             dao.upsert(ImageDescription(mediaId, newDescription))
-            val newList = _images.value?.map {
-                if (it.mediaId == mediaId) it.copy(description = newDescription) else it
+            val newList = _images.value?.map { item ->
+                if (item.mediaId == mediaId) {
+                    item.copy(description = newDescription)
+                } else {
+                    item
+                }
+            }?.toList() ?: emptyList()
+            withContext(Dispatchers.Main) {
+                _images.postValue(newList)
             }
-            _images.postValue(newList ?: emptyList())
+
         }
     }
 

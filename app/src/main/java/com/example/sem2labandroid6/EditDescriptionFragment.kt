@@ -19,7 +19,6 @@ class EditDescriptionFragment : Fragment() {
 
     companion object {
         const val REQUEST_KEY = "editDescriptionRequest"
-        const val POSITION_KEY = "position"
         const val DESCRIPTION_KEY = "description"
     }
 

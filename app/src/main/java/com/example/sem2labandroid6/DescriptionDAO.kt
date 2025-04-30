@@ -12,4 +12,6 @@ interface ImageDescriptionDao {
     @Query("SELECT description FROM image_descriptions WHERE mediaId = :mediaId")
     suspend fun getDescription(mediaId: Long): String?
 
+    @Query("SELECT * FROM image_descriptions")
+    suspend fun getAllDescriptions(): List<ImageDescription>
 }
