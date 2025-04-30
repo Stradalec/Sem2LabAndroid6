@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.sem2labandroid6.databinding.FragmentEditDescriptionBinding
 
 class EditDescriptionFragment : Fragment() {
     private lateinit var binding: FragmentEditDescriptionBinding
-    private var position: Int = -1
+    private var position: Long = -1
     private var initialDescription: String = ""
+    private val args: EditDescriptionFragmentArgs by navArgs()
 
     companion object {
         const val REQUEST_KEY = "editDescriptionRequest"
@@ -34,8 +36,8 @@ class EditDescriptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        position = arguments?.getInt(POSITION_KEY, -1) ?: -1
-        initialDescription = arguments?.getString(DESCRIPTION_KEY) ?: ""
+        position = args.position
+        initialDescription = args.description
 
         setupUI()
     }

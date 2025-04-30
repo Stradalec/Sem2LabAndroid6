@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
     app:startDestination="@id/galleryFragment">
@@ -12,17 +11,40 @@
         <action
             android:id="@+id/action_to_edit"
             app:destination="@id/editDescriptionFragment" />
+        <argument
+            android:name="position"
+            app:argType="long" />
+
+        <argument
+            android:name="description"
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/editDescriptionFragment"
         android:name="com.example.sem2labandroid6.EditDescriptionFragment"
-        android:label="Edit Description">
+        android:label="Редактировать описание">
         <argument
             android:name="position"
-            app:argType="integer"/>
+            app:argType="long" />
         <argument
             android:name="description"
-            app:argType="string"/>
+            app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.sem2labandroid6.DetailFragment">
+        <argument
+            android:name="mediaUri"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+
+
+    <action
+        android:id="@+id/action_gallery_to_detail"
+        app:destination="@id/detailFragment" />
 </navigation>

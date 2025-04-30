@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class ImagesAdapter(private val onLongClick: (Int) -> Unit) :
+class ImagesAdapter(private val onLongClick: (Int) -> Unit, private val onClick: (ImageItem) -> Unit) :
     RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<ImageItem>()
@@ -31,6 +31,9 @@ class ImagesAdapter(private val onLongClick: (Int) -> Unit) :
             .into(holder.imageView)
 
         holder.descriptionView.text = item.description
+        holder.itemView.setOnClickListener {
+            onClick(item)
+        }
         holder.itemView.setOnLongClickListener {
             onLongClick(position)
             true

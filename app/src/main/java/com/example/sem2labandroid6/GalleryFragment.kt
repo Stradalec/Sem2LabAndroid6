@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -40,9 +39,14 @@ class GalleryFragment : Fragment() {
     private fun setupRecyclerView() {
         binding.rView.apply {
             layoutManager = GridLayoutManager(requireContext(), 3)
-            adapter = ImagesAdapter { position ->
-                showDescriptionEditor(position)
-            }
+            adapter = ImagesAdapter(
+                onLongClick = { position ->
+                    showDescriptionEditor(position)
+                },
+                onClick = { item ->
+                    navigateToDetail(item)
+                }
+            )
             setHasFixedSize(true)
         }
     }
@@ -91,17 +95,21 @@ class GalleryFragment : Fragment() {
     private fun showDescriptionEditor(position: Int) {
         val currentItem = viewModel.images.value?.get(position) ?: return
 
-        val args = bundleOf(
-            "position" to position,
-            "description" to currentItem.description
+        val direction = GalleryFragmentDirections.actionToEdit(
+            position = position.toLong(),
+            description = currentItem.description
         )
-
-        findNavController().navigate(
-            R.id.action_to_edit,
-            args
-        )
+        findNavController().navigate(direction)
 
         setupResultListener()
+    }
+
+    private fun navigateToDetail(item: ImageItem) {
+        val direction = GalleryFragmentDirections.actionGalleryToDetail(
+            mediaUri = item.uri.toString(),
+            description = item.description
+        )
+        findNavController().navigate(direction)
     }
 
     private fun setupResultListener() {
@@ -109,11 +117,11 @@ class GalleryFragment : Fragment() {
             EditDescriptionFragment.REQUEST_KEY,
             viewLifecycleOwner
         ) { _, result ->
-            val position = result.getInt(EditDescriptionFragment.POSITION_KEY, -1)
+            val position = result.getLong(EditDescriptionFragment.POSITION_KEY, -1)
             val newDescription = result.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
-
-            if (position != -1) {
-                viewModel.updateDescription(position.toLong(), newDescription)
+            val one: Long = 1
+            if (position != one) {
+                viewModel.updateDescription(position, newDescription)
             }
         }
     }

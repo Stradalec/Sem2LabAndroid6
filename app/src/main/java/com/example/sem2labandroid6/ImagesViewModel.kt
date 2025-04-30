@@ -69,7 +69,7 @@ class ImagesViewModel(application: Application) : AndroidViewModel(application) 
             val newList = _images.value?.map {
                 if (it.mediaId == mediaId) it.copy(description = newDescription) else it
             }
-            _images.postValue(newList)
+            _images.postValue(newList!!)
         }
     }
 
