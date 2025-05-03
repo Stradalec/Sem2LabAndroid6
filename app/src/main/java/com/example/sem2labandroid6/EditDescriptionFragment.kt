@@ -10,7 +10,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.sem2labandroid6.databinding.FragmentEditDescriptionBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditDescriptionFragment : Fragment() {
     private lateinit var binding: FragmentEditDescriptionBinding
     private var position: Long = -1

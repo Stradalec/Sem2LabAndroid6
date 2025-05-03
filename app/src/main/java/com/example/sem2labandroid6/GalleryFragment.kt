@@ -14,9 +14,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sem2labandroid6.databinding.FragmentGalleryBinding
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 
+@AndroidEntryPoint
 class GalleryFragment : Fragment() {
-    private val viewModel: ImagesViewModel by viewModels(ownerProducer = { requireActivity() })
+    private val viewModel: ImagesViewModel by viewModels()
     private lateinit var binding: FragmentGalleryBinding
     private val permissionRequestCode = 100
 

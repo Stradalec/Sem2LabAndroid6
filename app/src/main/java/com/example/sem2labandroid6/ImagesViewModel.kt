@@ -7,13 +7,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ImagesViewModel(application: Application) : AndroidViewModel(application) {
-    private val database = AppDatabase.getInstance(application)
-    private val dao = database.imageDescriptionDao()
+@HiltViewModel
+class ImagesViewModel @Inject constructor(application: Application, private val dao: ImageDescriptionDao) : AndroidViewModel(application) {
     private val _images = MutableLiveData<List<ImageItem>>()
     val images: LiveData<List<ImageItem>> = _images
 
