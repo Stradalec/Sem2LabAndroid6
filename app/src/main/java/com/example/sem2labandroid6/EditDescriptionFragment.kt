@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.sem2labandroid6.databinding.FragmentEditDescriptionBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,13 +68,14 @@ class EditDescriptionFragment : Fragment() {
     private fun saveAndExit() {
         hideKeyboard()
 
-        val result = bundleOf(
-            "mediaId" to args.mediaId,
-            DESCRIPTION_KEY to binding.etDescription.text.toString()
+        setFragmentResult(
+            REQUEST_KEY,
+            bundleOf(
+                "mediaId" to args.mediaId,
+                DESCRIPTION_KEY to binding.etDescription.text.toString()
+            )
         )
-
-        parentFragmentManager.setFragmentResult(REQUEST_KEY, result)
-        parentFragmentManager.popBackStack()
+        findNavController().navigateUp()
     }
 
     private fun exitWithoutSaving() {

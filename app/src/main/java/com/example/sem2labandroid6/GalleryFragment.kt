@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -117,13 +118,10 @@ class GalleryFragment : Fragment() {
     }
 
     private fun setupResultListener() {
-        parentFragmentManager.setFragmentResultListener(
-            EditDescriptionFragment.REQUEST_KEY,
-            viewLifecycleOwner
-        ) { _, result ->
-            val mediaId = result.getLong("mediaId")
-            val newDescription = result.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
-            val oneWithMinus: Long = -1
+        val oneWithMinus: Long = -1
+        setFragmentResultListener(EditDescriptionFragment.REQUEST_KEY) {requestKey, bundle ->
+            val mediaId = bundle.getLong("mediaId")
+            val newDescription = bundle.getString(EditDescriptionFragment.DESCRIPTION_KEY) ?: ""
             if (mediaId != oneWithMinus) {
                 viewModel.updateDescription(mediaId, newDescription)
             }
